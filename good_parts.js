@@ -304,3 +304,213 @@ console.log(up())
 console.log(down())
 console.log(down())
 console.log(up())
+
+function revocable(binary){
+  return {
+    invoke: function (a, b) {
+      if (binary !== undefined){
+        return binary(a, b)
+      }else{
+        return undefined
+      }
+    },
+    revoke: function(){
+      binary = undefined
+    }
+  }
+}
+// var rev = revocable(add), add_rev = rev.invoke;
+// console.log(add_rev(3,4));
+// rev.revoke();
+// console.log(add_rev(5,7))
+
+function m (value,source){
+  return {
+    value: value,
+    source:(typeof source === 'string')
+      ? source
+      :String(value)
+  }
+}
+
+
+
+function addm (m1, m2){
+  return m (m1.value + m2.value,
+  "(" + m1.source + "+" + m2.source + ")"
+  )
+}
+
+// console.log(addm(m(3), m(4)))
+
+function liftm(binary, symbol){
+  return function(a, b){
+    if (typeof a === 'number'){
+      a = m(a)
+    }
+    if (typeof b === 'number'){
+      b = m(b)
+    }
+    return m (
+      binary(a.value, b.value),
+      "(" + a.source + symbol + b.source + ")"
+      )
+  }
+}
+
+// console.log(JSON.stringify(liftm(mul, "*")(m(3), m(4))))
+// console.log(JSON.stringify(liftm(mul, "*")(3, m(4))))
+
+// simple array expressions
+
+var sae = [mul, 5, 11]
+
+function exp(arg){
+  if (Array.isArray(arg) ){
+  return arg[0](exp(arg[1]), exp(arg[2]))
+  }else{
+    return arg
+  }
+}
+
+// console.log(exp(sae))
+// console.log(exp(42))
+
+var nae = [
+  Math.sqrt, [
+    add,
+    [square, 3],
+    [square, 4]
+    ]
+  ];
+// console.log(exp(nae))
+
+// recursion is rad for nested data structures
+
+function addg(first){
+  function more(next){
+    if (next === undefined){
+      return first;
+    }
+    first += next;
+    return more;
+  }
+  if (first !== undefined){
+    return more;
+  }
+
+}
+
+// console.log(addg(2)(3)())
+
+// retursion: a function that returns itself
+
+function liftg( binary ){
+  return function ( first ){
+    function more( next ){
+      if (next === undefined){
+        return first;
+      }
+      first =binary(first, next);
+      return more;
+    };
+    if (first !== undefined){
+      return more;
+    }
+  }
+}
+
+function arrayg(first){
+  var array =[];
+  function more(next){
+    if (next === undefined){
+      return array;
+    }
+    array.push(next);
+    return more;
+  }
+  return more(first)
+
+}
+
+// console.log(arrayg())
+// console.log(arrayg(3)(4)(5)())
+
+function continuize(func){
+  return function(callback, val){
+    return callback(func(val))
+  }
+}
+
+// sqrtc = continuize(Math.sqrt);
+// sqrtc(alert, 81)
+
+// function constructor(init){
+//   var that = other_constructor(init),
+//     member,
+//     method = function(){
+//       // init, member, method
+//     };
+
+//   that.method = method;
+//   return that
+// }
+
+ function vector(){
+   var array =[]
+
+   return {
+     get: function get(i){
+       return array[i];
+     },
+     store: function store(i,v){
+       array[+i] = v;
+     },
+     // +operand tries to coerce into
+     append: function append(v){
+       array.push(v);
+     }
+   };
+ }
+
+myvector = vector();
+myvector.append(7);
+myvector.store(1, 8);
+console.log(myvector.get(0))
+console.log(myvector.get(1))
+console.log(myvector)
+
+function returnThis(){
+  stash = this
+}
+var stash;
+
+myvector.store("push",returnThis)
+console.log(myvector.append(9))
+console.log(stash)
+
+//pubsub
+
+function pubsub(){
+  var subscribers = []
+  return Object.freeze({
+    subscribe: function(subscriber){
+      subscribers.push(subscriber)
+    },
+    publish: function(publication){
+      var i, length = subscribers.length;
+      for (i=0; i<lenth; i+= 1){
+        try {
+          subscribers[i](publication)
+        } catch (ignore) {}
+      }
+    }
+  })
+}
+
+// attacks
+// my_pubsub.subscribe();
+// use the try catcher
+
+// my_pubsub.publish = undefined
+// freeze your object
