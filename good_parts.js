@@ -498,12 +498,13 @@ function pubsub(){
       subscribers.push(subscriber)
     },
     publish: function(publication){
-      var i, length = subscribers.length;
-      for (i=0; i<lenth; i+= 1){
-        try {
-          subscribers[i](publication)
-        } catch (ignore) {}
-      }
+      subscribers.forEach(function(s){
+
+        setTimeout(function(){
+          s(publication)
+        }, 0);
+
+      })
     }
   })
 }
@@ -514,3 +515,17 @@ function pubsub(){
 
 // my_pubsub.publish = undefined
 // freeze your object
+
+//erase the subscriber array
+my_pubsub.subscribe(function (){
+  this.length = 0
+})
+// use a forEach instead of for loop, doesn't give contents of subscribers access to array though this
+
+
+// makes your publication jump the line
+my_pubsub.subscribe(limit(function(){
+  my_pubsub.publish("out of order");
+}, 1))
+
+// do it async, now it will wait out before recursing (once) because of limit
