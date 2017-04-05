@@ -9,16 +9,15 @@ function main() {
     var sum
     var max
     for (var i =1; i <5; i++ ){
-        for (var j = 1; j <5; j++){
-            thei = [arr[i-1][j-1], arr[i-1][j], arr[i-1][j+1], arr[i][j], arr[i+1][j-1], arr[i+1][j], arr[i+1][j+1]];
-               sum = thei.reduce(add, 0);
+      for (var j = 1; j <5; j++){
+        thei = [arr[i-1][j-1], arr[i-1][j], arr[i-1][j+1], arr[i][j], arr[i+1][j-1], arr[i+1][j], arr[i+1][j+1]];
+           sum = thei.reduce(add, 0);
 
-               if (max === undefined || sum > max)
-               {
-                   max= sum
-               }
-            }
-
+           if (max === undefined || sum > max)
+           {
+               max= sum
+           }
+        }
     }
     console.log(max)
 }
