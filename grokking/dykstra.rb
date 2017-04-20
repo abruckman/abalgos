@@ -21,13 +21,47 @@ infinity = Float::INFINITY
 costs = {}
 costs["a"] = 6
 costs["b"] = 2
-costs["fin"] = infinity
+costs["fin"] = 8
 
 parents = {}
 parents["a"] = "start"
 parents["b"] = "start"
 parents["fin"] = "unknown"
 
+processed = []
+
+def find_lowest_cost_node(costs, processed)
+  lowest_cost = Float::INFINITY
+  lowest_cost_node = nil
+  costs.each do |node, cost|
+    if cost < lowest_cost && !processed.include?(node)
+      lowest_cost = cost
+      lowest_cost_node = node
+    end
+  end
+  lowest_cost_node
+end
+
+p costs
+def dijsktra_costs(costs, processed, graph, parents, infinity = Float::INFINITY)
+  node = find_lowest_cost_node(costs, processed)
+  while node != nil
+    cost = costs[node]
+    neighbors = graph[node]
+    neighbors.each do |n_node, n_cost|
+      new_cost = cost + neighbors[n_node]
+      if costs[n_node] > new_cost
+        costs[n_node] = new_cost
+        parents[n_node] = node
+      end
+    end
+    processed.push(node)
+    node = find_lowest_cost_node(costs, processed)
+  end
+  costs
+end
+
+p costs
 
 # class Item
 #   attr_reader :name
