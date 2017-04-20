@@ -43,7 +43,7 @@ def find_lowest_cost_node(costs, processed)
 end
 
 p costs
-def dijsktra_costs(costs, processed, graph, parents, infinity = Float::INFINITY)
+def dijkstra_costs(costs, processed, graph, parents, infinity = Float::INFINITY)
   node = find_lowest_cost_node(costs, processed)
   while node != nil
     cost = costs[node]
@@ -61,6 +61,7 @@ def dijsktra_costs(costs, processed, graph, parents, infinity = Float::INFINITY)
   costs
 end
 
+dijkstra_costs(costs, processed, graph, parents)
 p costs
 
 # class Item
