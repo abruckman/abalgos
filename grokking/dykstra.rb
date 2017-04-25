@@ -21,7 +21,7 @@ infinity = Float::INFINITY
 costs = {}
 costs["a"] = 6
 costs["b"] = 2
-costs["fin"] = 8
+costs["fin"] = infinity
 
 parents = {}
 parents["a"] = "start"
