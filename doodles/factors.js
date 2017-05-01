@@ -42,4 +42,6 @@ function getPrimeFactors(int){
 
 
 
+
+
 getPrimeFactors(18)
